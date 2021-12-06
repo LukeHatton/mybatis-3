@@ -72,8 +72,10 @@ public class SqlSessionFactoryBuilder {
     return build(inputStream, null, properties);
   }
 
+  /* 从输入流里读取配置 */
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
+      //创建XML解析器建造者
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
       return build(parser.parse());
     } catch (Exception e) {
