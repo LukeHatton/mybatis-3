@@ -29,9 +29,11 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
+ * 要注意这个类，在mybatis中很重要
  * @author Clinton Begin
  */
 public abstract class BaseBuilder {
+  //所有mybatis的配置的holder
   protected final Configuration configuration;
   protected final TypeAliasRegistry typeAliasRegistry;
   protected final TypeHandlerRegistry typeHandlerRegistry;

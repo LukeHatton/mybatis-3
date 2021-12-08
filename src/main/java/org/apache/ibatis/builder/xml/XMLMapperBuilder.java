@@ -92,6 +92,7 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   public void parse() {
     if (!configuration.isResourceLoaded(resource)) {
+      //获取mapper.xml配置文件中<mapper>标签中的内容
       configurationElement(parser.evalNode("/mapper"));
       configuration.addLoadedResource(resource);
       bindMapperForNamespace();
@@ -106,6 +107,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     return sqlFragments.get(refid);
   }
 
+  /* 解析mapper.xml中<mapper>标签下的内容 */
   private void configurationElement(XNode context) {
     try {
       String namespace = context.getStringAttribute("namespace");
@@ -115,9 +117,13 @@ public class XMLMapperBuilder extends BaseBuilder {
       builderAssistant.setCurrentNamespace(namespace);
       cacheRefElement(context.evalNode("cache-ref"));
       cacheElement(context.evalNode("cache"));
+      //<parameterMap>
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
+      //<resultMap>
       resultMapElements(context.evalNodes("/mapper/resultMap"));
+      //<sql>
       sqlElement(context.evalNodes("/mapper/sql"));
+      //所有statement类的标签 <select> <insert> <update> <delete>
       buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing Mapper XML. The XML location is '" + resource + "'. Cause: " + e, e);
@@ -131,6 +137,12 @@ public class XMLMapperBuilder extends BaseBuilder {
     buildStatementFromContext(list, null);
   }
 
+  /**
+   * 解析statement类的标签
+   *
+   * @param list               statement标签的List
+   * @param requiredDatabaseId databaseId
+   */
   private void buildStatementFromContext(List<XNode> list, String requiredDatabaseId) {
     for (XNode context : list) {
       final XMLStatementBuilder statementParser = new XMLStatementBuilder(configuration, builderAssistant, context, requiredDatabaseId);
@@ -254,6 +266,14 @@ public class XMLMapperBuilder extends BaseBuilder {
     return resultMapElement(resultMapNode, Collections.emptyList(), null);
   }
 
+  /**
+   * 解析resultMap标签
+   *
+   * @param resultMapNode            一个resultMap节点
+   * @param additionalResultMappings  resultMap标签中的result标签的List
+   * @param enclosingType
+   * @return 解析完成的一个ResultMap对象
+   */
   private ResultMap resultMapElement(XNode resultMapNode, List<ResultMapping> additionalResultMappings, Class<?> enclosingType) {
     ErrorContext.instance().activity("processing " + resultMapNode.getValueBasedIdentifier());
     String type = resultMapNode.getStringAttribute("type",
@@ -277,6 +297,7 @@ public class XMLMapperBuilder extends BaseBuilder {
         if ("id".equals(resultChild.getName())) {
           flags.add(ResultFlag.ID);
         }
+        //构造ResultMapping后添加到List中
         resultMappings.add(buildResultMappingFromContext(resultChild, typeClass, flags));
       }
     }
@@ -342,6 +363,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     sqlElement(list, null);
   }
 
+  /* 解析<sql>标签 */
   private void sqlElement(List<XNode> list, String requiredDatabaseId) {
     for (XNode context : list) {
       String databaseId = context.getStringAttribute("databaseId");
