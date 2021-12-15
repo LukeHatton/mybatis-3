@@ -87,12 +87,16 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     return configuration;
   }
 
+  /* 在数据源中开启一个session */
   private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
     Transaction tx = null;
     try {
       final Environment environment = configuration.getEnvironment();
+      //事务工厂
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
+      //通过事务工厂，获取事务
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
+      //执行器，使用了装饰者模式
       final Executor executor = configuration.newExecutor(tx, execType);
       return new DefaultSqlSession(configuration, executor, autoCommit);
     } catch (Exception e) {
@@ -125,10 +129,13 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     }
   }
 
+  /* 获取事务工厂 */
   private TransactionFactory getTransactionFactoryFromEnvironment(Environment environment) {
     if (environment == null || environment.getTransactionFactory() == null) {
+      //未配置事务工厂，使用默认工厂
       return new ManagedTransactionFactory();
     }
+    //有配置事务工厂，则使用配置的工厂
     return environment.getTransactionFactory();
   }
 
