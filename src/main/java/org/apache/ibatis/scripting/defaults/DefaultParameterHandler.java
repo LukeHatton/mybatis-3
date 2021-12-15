@@ -64,6 +64,7 @@ public class DefaultParameterHandler implements ParameterHandler {
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     if (parameterMappings != null) {
       for (int i = 0; i < parameterMappings.size(); i++) {
+        //获取参数映射列表
         ParameterMapping parameterMapping = parameterMappings.get(i);
         if (parameterMapping.getMode() != ParameterMode.OUT) {
           Object value;
@@ -72,10 +73,13 @@ public class DefaultParameterHandler implements ParameterHandler {
             value = boundSql.getAdditionalParameter(propertyName);
           } else if (parameterObject == null) {
             value = null;
+            //原语类型处理
           } else if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
             value = parameterObject;
           } else {
+            //对象类型处理 使用了反射模块
             MetaObject metaObject = configuration.newMetaObject(parameterObject);
+            //使用反射获取对象的属性值
             value = metaObject.getValue(propertyName);
           }
           TypeHandler typeHandler = parameterMapping.getTypeHandler();
