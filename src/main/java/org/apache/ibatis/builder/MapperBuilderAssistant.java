@@ -82,6 +82,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
     this.currentNamespace = currentNamespace;
   }
 
+  /* 应用命名空间，即mapper类的完全限定名+方法名 */
   public String applyCurrentNamespace(String base, boolean isReference) {
     if (base == null) {
       return null;
@@ -173,6 +174,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
         .build();
   }
 
+  /* 使用建造者模式，构造ResultMap，并添加到Configuration对象中 */
   public ResultMap addResultMap(
       String id,
       Class<?> type,
@@ -241,6 +243,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return new Discriminator.Builder(configuration, resultMapping, namespaceDiscriminatorMap).build();
   }
 
+  /* 将完成mapping的statement加入到Configuration对象中 */
   public MappedStatement addMappedStatement(
       String id,
       SqlSource sqlSource,
@@ -408,6 +411,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return resultMaps;
   }
 
+  /* 使用建造者模式，构造ResultMapping */
   public ResultMapping buildResultMapping(
       Class<?> resultType,
       String property,

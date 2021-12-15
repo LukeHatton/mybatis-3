@@ -63,12 +63,15 @@ public class XMLScriptBuilder extends BaseBuilder {
     nodeHandlerMap.put("bind", new BindHandler());
   }
 
+  /* 解析sql脚本 */
   public SqlSource parseScriptNode() {
     MixedSqlNode rootSqlNode = parseDynamicTags(context);
     SqlSource sqlSource;
     if (isDynamic) {
+      //解析动态sql，比如包含传参的、<foreach>标签的statement
       sqlSource = new DynamicSqlSource(configuration, rootSqlNode);
     } else {
+      //解析静态sql，即不包含任何传参的sql语句
       sqlSource = new RawSqlSource(configuration, rootSqlNode, parameterType);
     }
     return sqlSource;

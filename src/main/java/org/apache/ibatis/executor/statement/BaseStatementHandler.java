@@ -98,6 +98,7 @@ public abstract class BaseStatementHandler implements StatementHandler {
     }
   }
 
+   /* 实例化一个statement，交给子类自己实现 */
   protected abstract Statement instantiateStatement(Connection connection) throws SQLException;
 
   protected void setStatementTimeout(Statement stmt, Integer transactionTimeout) throws SQLException {

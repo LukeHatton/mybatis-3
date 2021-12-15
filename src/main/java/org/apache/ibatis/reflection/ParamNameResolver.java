@@ -155,6 +155,7 @@ public class ParamNameResolver {
   public static Object wrapToMapIfCollection(Object object, String actualParamName) {
     if (object instanceof Collection) {
       ParamMap<Object> map = new ParamMap<>();
+      //这就是为什么可以通过"collection"或"list"获取作为参数的对象
       map.put("collection", object);
       if (object instanceof List) {
         map.put("list", object);
